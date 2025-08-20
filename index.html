@@ -2,44 +2,240 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Node + Express App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Velvet — a very sexy index.html</title>
+  <meta name="description" content="A sleek, single‑file landing page with glassmorphism, neon accents, and tasteful animations." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #0b0b11;
+      --card: rgba(255,255,255,0.08);
+      --glass: rgba(255,255,255,0.08);
+      --text: #e9ecf1;
+      --muted: #9aa3b2;
+      --accent: 268 100% 66%; /* hsl */
+      --accent-2: 195 100% 50%;
+      --radius: 22px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box }
+    html, body { height: 100% }
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #f9f9f9;
-      padding: 50px;
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: radial-gradient(1200px 800px at 10% -10%, #3a1e68 0%, transparent 60%),
+                  radial-gradient(1000px 600px at 110% 10%, #0ea5e9 0%, transparent 55%),
+                  linear-gradient(180deg, #09090f 0%, #0b0b11 65%);
+      overflow-x: hidden;
     }
-    h1 {
-      color: #333;
+
+    /* Animated blobs */
+    .blob { position: fixed; filter: blur(60px); opacity: .45; z-index: -1; }
+    .blob.one { width: 420px; height: 420px; background: #7c3aed; top: -120px; left: -60px; border-radius: 50%; animation: float 18s ease-in-out infinite; }
+    .blob.two { width: 520px; height: 520px; background: #06b6d4; bottom: -140px; right: -80px; border-radius: 50%; animation: float 22s ease-in-out infinite reverse; }
+    @keyframes float { 0%,100% { transform: translate(0,0) scale(1) } 50% { transform: translate(20px, -30px) scale(1.07) } }
+
+    header { position: sticky; top: 0; backdrop-filter: blur(12px); background: linear-gradient(to bottom, rgba(10,10,16,.6), rgba(10,10,16,0)); border-bottom: 1px solid rgba(255,255,255,.06); z-index: 20; }
+    .nav { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: .3px; text-decoration: none; color: var(--text); }
+    .logo { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg, hsl(var(--accent)/.25), hsl(var(--accent-2)/.25)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 8px 24px rgba(124,58,237,.25); }
+
+    .nav a { color: var(--muted); text-decoration: none; margin: 0 12px; font-weight: 500; }
+    .nav a:hover { color: #fff }
+
+    .cta { display: inline-flex; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,.12); padding: 12px 16px; border-radius: 999px; background: linear-gradient(135deg, rgba(124,58,237,.15), rgba(14,165,233,.15)); box-shadow: 0 10px 30px rgba(14,165,233,.18); color: white; font-weight: 600; text-decoration: none; transition: transform .2s ease, box-shadow .2s ease; }
+    .cta:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(14,165,233,.28) }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 56px 20px 64px }
+
+    .hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 36px; align-items: center; padding-top: 40px; }
+    .tag { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.06); color: #e6e6ff; font-weight: 600; font-size: 12px; letter-spacing: .4px; text-transform: uppercase; }
+
+    h1 { font-family: "Poppins", sans-serif; font-size: clamp(34px, 6vw, 62px); line-height: 1.05; margin: 16px 0 14px; letter-spacing: -0.02em; }
+    .lead { color: var(--muted); font-size: clamp(15px, 2.2vw, 18px); line-height: 1.7; margin-bottom: 26px; }
+
+    .btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn { cursor: pointer; border: none; padding: 14px 18px; border-radius: 14px; font-weight: 600; transition: transform .18s ease, box-shadow .18s ease, background .18s; }
+    .btn.primary { background: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(210 100% 56%) 100%); color: #fff; box-shadow: 0 12px 30px rgba(56,189,248,.35); }
+    .btn.primary:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(56,189,248,.5); }
+    .btn.ghost { background: transparent; border: 1px solid rgba(255,255,255,.14); color: #fff; }
+    .btn.ghost:hover { background: rgba(255,255,255,.06); }
+
+    /* Showcase card */
+    .scene { position: relative; aspect-ratio: 4 / 3; border-radius: var(--radius); background: radial-gradient(120% 120% at 0% 0%, rgba(124,58,237,.25), rgba(14,165,233,.18) 48%, transparent 60%), linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); border: 1px solid rgba(255,255,255,.12); box-shadow: var(--shadow); overflow: hidden; transform-style: preserve-3d; perspective: 1000px; }
+    .gridlines { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px); background-size: 40px 40px; mask: linear-gradient(to bottom, black 40%, transparent); }
+    .orb { position: absolute; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.2) 40%, rgba(124,58,237,.55) 60%, rgba(14,165,233,.5) 100%); top: 18%; left: 18%; filter: blur(.5px); mix-blend-mode: screen; animation: float 10s ease-in-out infinite; }
+    .ring { position: absolute; width: 340px; height: 340px; border-radius: 999px; border: 2px dashed rgba(255,255,255,.18); top: 36%; left: 40%; transform: translate(-50%,-50%) rotate(0deg); animation: spin 18s linear infinite; }
+    @keyframes spin { to { transform: translate(-50%,-50%) rotate(360deg) } }
+
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 18px; }
+    .stat { background: var(--glass); border: 1px solid rgba(255,255,255,.09); border-radius: 16px; padding: 16px; backdrop-filter: blur(10px); box-shadow: var(--shadow); }
+    .stat b { display: block; font-size: clamp(18px, 3vw, 26px); font-weight: 700; }
+    .stat span { color: var(--muted); font-size: 13px; }
+
+    /* Features */
+    .section { margin-top: 70px; }
+    .kicker { color: #c7c9ff; letter-spacing: .12em; font-size: 12px; text-transform: uppercase; font-weight: 700; }
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 18px; }
+    .card { background: var(--glass); border: 1px solid rgba(255,255,255,.09); border-radius: var(--radius); padding: 22px; backdrop-filter: blur(10px); box-shadow: var(--shadow); transition: transform .18s ease, box-shadow .18s ease; }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 18px 50px rgba(0,0,0,.45); }
+    .card h3 { margin: 0 0 6px; font-family: Poppins, sans-serif; }
+    .card p { color: var(--muted); margin: 0; line-height: 1.6; }
+
+    /* Footer */
+    footer { border-top: 1px solid rgba(255,255,255,.08); margin-top: 64px; }
+    .foot { max-width: 1100px; margin: 0 auto; padding: 26px 20px 46px; display: flex; gap: 14px; align-items: center; justify-content: space-between; color: var(--muted); }
+
+    /* Toggle */
+    .toggle { cursor: pointer; display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); padding: 8px 12px; border-radius: 999px; font-weight: 600; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .scene { order: -1; }
+      .features { grid-template-columns: 1fr 1fr; }
     }
-    button {
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      margin: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #0056b3;
+    @media (max-width: 620px) {
+      .stats { grid-template-columns: 1fr; }
+      .features { grid-template-columns: 1fr; }
+      .nav a.hide-sm { display: none; }
     }
   </style>
 </head>
 <body>
-  <h1>Welcome to My App 🚀</h1>
-  <p>Click the button to fetch a message from the server:</p>
-  <button onclick="getHello()">Get Message</button>
-  <p id="output"></p>
+  <div class="blob one" aria-hidden="true"></div>
+  <div class="blob two" aria-hidden="true"></div>
+
+  <header>
+    <nav class="nav">
+      <a class="brand" href="#" aria-label="Velvet home">
+        <span class="logo">✨</span>
+        <span>Velvet</span>
+      </a>
+      <div>
+        <a class="hide-sm" href="#features">Features</a>
+        <a class="hide-sm" href="#showcase">Showcase</a>
+        <a class="hide-sm" href="#pricing">Pricing</a>
+        <button class="toggle" id="themeToggle" aria-pressed="false" aria-label="Toggle theme">🌙 <span>Mode</span></button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <span class="tag">New • Neon‑glass UI kit</span>
+        <h1>Make your landing page <span style="background:linear-gradient(90deg,hsl(var(--accent)),hsl(var(--accent-2))); -webkit-background-clip:text; background-clip:text; color:transparent;">silky smooth</span>.</h1>
+        <p class="lead">A sexy, single‑file template with glassmorphism, animated blobs, and tasteful micro‑interactions. No build tools. No frameworks. Just vibes.</p>
+        <div class="btns">
+          <button class="btn primary" onclick="scrollToEl('#showcase')">Get the Glow</button>
+          <button class="btn ghost" onclick="scrollToEl('#features')">Explore Features</button>
+        </div>
+        <div class="stats" aria-label="Highlights">
+          <div class="stat"><b>1</b><span>File only</span></div>
+          <div class="stat"><b>&lt; 15KB</b><span>of custom CSS</span></div>
+          <div class="stat"><b>0</b><span>Dependencies</span></div>
+        </div>
+      </div>
+
+      <div class="scene" id="showcase">
+        <div class="gridlines" aria-hidden="true"></div>
+        <div class="ring" aria-hidden="true"></div>
+        <div class="orb" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="kicker">Features</div>
+      <h2 style="margin:.3rem 0 1rem; font-family:Poppins, sans-serif; letter-spacing:-.02em">All the spice. None of the bloat.</h2>
+      <div class="features">
+        <article class="card">
+          <h3>Glassmorphism</h3>
+          <p>Frosted glass cards with buttery shadows and subtle borders. Looks expensive. Costs nothing.</p>
+        </article>
+        <article class="card">
+          <h3>Neon Accents</h3>
+          <p>Gradient‑kissed highlights that make CTAs pop without screaming. Nightlife for your UI.</p>
+        </article>
+        <article class="card">
+          <h3>Accessible by Default</h3>
+          <p>Semantic HTML, focusable controls, and high‑contrast text. Style without sacrificing sense.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="pricing">
+      <div class="kicker">Pricing</div>
+      <h2 style="margin:.3rem 0 1rem; font-family:Poppins, sans-serif; letter-spacing:-.02em">Pick your poison</h2>
+      <div class="features">
+        <article class="card" style="border-image: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent-2))) 1; border-width:1px;">
+          <h3>Free</h3>
+          <p>Copy the file. Tweak the vibes. Ship tonight. $0 forever.</p>
+        </article>
+        <article class="card">
+          <h3>Pro</h3>
+          <p>Includes layered Figma, extra scenes and components. Pay once, glow always.</p>
+        </article>
+        <article class="card">
+          <h3>Enterprise</h3>
+          <p>Custom theming, audit, and performance tune‑up. Because your brand deserves couture.</p>
+        </article>
+      </div>
+      <div style="margin-top:18px">
+        <a class="cta" href="#" onclick="alert('This is a demo ✨')">Start glowing — it\'s free</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="foot">
+      <span>© <span id="year"></span> Velvet UI. Built with love and CSS.</span>
+      <a class="cta" href="#" onclick="scrollTo({top:0,behavior:'smooth'})">Back to top ↑</a>
+    </div>
+  </footer>
 
   <script>
-    async function getHello() {
-      const res = await fetch("/hello");
-      const data = await res.json();
-      document.getElementById("output").innerText = data.message;
-    }
+    const yearEl = document.getElementById('year');
+    yearEl.textContent = new Date().getFullYear();
+
+    // gentle parallax tilt for the showcase card
+    const scene = document.querySelector('.scene');
+    let rect;
+    function updateRect(){ rect = scene.getBoundingClientRect(); }
+    updateRect();
+    window.addEventListener('resize', updateRect);
+
+    scene.addEventListener('mousemove', (e) => {
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      scene.style.transform = `perspective(1000px) rotateX(${(-y)*6}deg) rotateY(${x*8}deg)`;
+    });
+    scene.addEventListener('mouseleave', () => {
+      scene.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+    });
+
+    // smooth scroll helper
+    function scrollToEl(sel){ const el = document.querySelector(sel); if(!el) return; el.scrollIntoView({behavior:'smooth', block:'start'}); }
+    window.scrollToEl = scrollToEl;
+
+    // theme toggle (light/dark subtle)
+    const toggle = document.getElementById('themeToggle');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const applyTheme = (dark) => {
+      document.documentElement.style.setProperty('--bg', dark ? '#0b0b11' : '#f7f7fb');
+      document.body.style.background = dark
+        ? 'radial-gradient(1200px 800px at 10% -10%, #3a1e68 0%, transparent 60%),\n            radial-gradient(1000px 600px at 110% 10%, #0ea5e9 0%, transparent 55%),\n            linear-gradient(180deg, #09090f 0%, #0b0b11 65%)'
+        : 'radial-gradient(1200px 800px at 10% -10%, #e9d5ff 0%, transparent 60%),\n            radial-gradient(1000px 600px at 110% 10%, #bae6fd 0%, transparent 55%),\n            linear-gradient(180deg, #ffffff 0%, #f7f7fb 65%)';
+      document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+      toggle.innerHTML = dark ? '🌙 <span>Mode</span>' : '☀️ <span>Mode</span>';
+    };
+    let dark = prefersDark.matches;
+    applyTheme(dark);
+    toggle.addEventListener('click', () => { dark = !dark; applyTheme(dark); toggle.setAttribute('aria-pressed', String(dark)); });
   </script>
 </body>
 </html>
